@@ -77,8 +77,8 @@ import errno
 import argparse
 
 
-if sys.version_info[0] < 3 and sys.version_info[1] < 7:
-    sys.exit('PipeClient Error: Python 2.7 or later required')
+if sys.version_info[0] < 4 and sys.version_info[1] < 8:
+    sys.exit('PipeClient Error: Python 3.9 or later required')
 
 # Platform specific constants
 if sys.platform == 'win32':
@@ -153,17 +153,23 @@ class PipeClient():
         # Allow a little time for connection to be made.
         time.sleep(0.1)
         if not self._write_pipe:
-            sys.exit('PipeClientError: Write pipe cannot be opened.')
+            sys.exit('PipeClientError: Write pipe cannot be opened. Please enable mod-script-pipe in Audacity.')
 
     def _write_pipe_open(self):
         """Open _write_pipe."""
-        self._write_pipe = open(WRITE_NAME, 'w')
+        try:
+            self._write_pipe = open(WRITE_NAME, 'w')
+            return 0
+        except IOError:
+            return 1
 
     def _read_thread_start(self):
         """Start read_pipe thread."""
         read_thread = threading.Thread(target=self._reader)
         read_thread.daemon = True
         read_thread.start()
+        if not self._write_pipe:
+            sys.exit('PipeClientError: Read pipe cannot be opened. Please enable mod-script-pipe in Audacity.')
 
     def write(self, command, timer=False):
         """Write a command to _write_pipe.
@@ -202,7 +208,10 @@ class PipeClient():
         """Read FIFO in worker thread."""
         # Thread will wait at this read until it connects.
         # Connection should occur as soon as _write_pipe has connected.
-        read_pipe = open(READ_NAME, 'r')
+        try:
+            read_pipe = open(READ_NAME, 'r')
+        except IOError:
+            return 1
         message = ''
         pipe_ok = True
         while pipe_ok:
@@ -224,6 +233,7 @@ class PipeClient():
             PipeClient.reply_ready.set()
             message = ''
         read_pipe.close()
+        return 0
 
     def read(self):
         """Read Audacity's reply from pipe.
