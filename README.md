@@ -10,3 +10,5 @@
 
 - <https://www.youtube.com/watch?v=nEz2TtTI_Ss>
 - <https://github.com/audacity/audacity/blob/master/scripts/piped-work/pipeclient.py>
+- <https://manual.audacityteam.org/man/scripting.html>
+- <https://github.com/audacity/audacity/tree/master/scripts/piped-work>
