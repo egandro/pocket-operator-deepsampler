@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import json
+import os
 import time
 from pipeclient import PipeClient
 
@@ -25,11 +26,17 @@ class Audacity():
                 response = self.client.read()
         return response
 
-    def play_record(self, filename):
+    def play_record(self, reference_sample=""):
         """Import track and record to new track.
         Note that a stop command is not required as playback will stop at end of selection.
         """
-        self._do_command(f"Import2: Filename={filename}")
+        if reference_sample == "":
+            script_dir = os.path.abspath(os.path.dirname(__file__))
+            samples_dir =  os.path.join(script_dir, 'samples')
+            reference_sample = os.path.join(samples_dir, 'silence-10sec.wav')
+
+
+        self._do_command(f"Import2: Filename={reference_sample}")
         self._do_command("Select: Track=0")
         self._do_command("SelTrackStartToEnd")
 
