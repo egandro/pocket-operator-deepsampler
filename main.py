@@ -40,7 +40,11 @@ def main():
 
     audacity = Audacity()
     audacity.play_record()
-    audacity.truncate_silence()
+
+    if audacity.truncate_silence() is False:
+        print( "Error: recorded silence")
+        return 1
+
     audacity.export(tmp_file)
 
 if __name__ == '__main__':
