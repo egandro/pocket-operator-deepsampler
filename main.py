@@ -40,6 +40,7 @@ def main():
 
     audacity = Audacity()
     audacity.play_record()
+    audacity.truncate_silence()
     audacity.export(tmp_file)
 
 if __name__ == '__main__':

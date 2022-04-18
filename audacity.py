@@ -42,24 +42,29 @@ class Audacity():
 
 
         self._do_command(f"Import2: Filename={reference_sample}")
-        self._do_command("Select: Track=0")
-        self._do_command("SelTrackStartToEnd")
+        self._do_command('Select: Track=0')
+        self._do_command('SelTrackStartToEnd')
 
         # Our imported file has one clip. Find the length of it.
-        clipsinfo = self._do_command("GetInfo: Type=Clips")
+        clipsinfo = self._do_command('GetInfo: Type=Clips')
         clipsinfo = clipsinfo[:clipsinfo.rfind('BatchCommand finished: OK')]
 
         clips = json.loads(clipsinfo)
         duration = clips[0]['end'] - clips[0]['start']
 
         # Now we can start recording.
-        self._do_command("Record2ndChoice")
+        self._do_command('Record2ndChoice')
         print('Sleeping until recording is complete...')
         time.sleep(duration + 0.1)
 
+    def truncate_silence(self):
+        self._do_command('Select: Track=1 mode=Set')
+        self._do_command('SelectAll')
+        self._do_command('TruncateSilence: Action="Truncate Detected Silence" Compress="50" Independent="0" Minimum="0.001" Threshold="-20" Truncate="0.001"')
+
     def export(self, filename):
         """Export the new track, and deleted both tracks."""
-        self._do_command("Select: Track=1 mode=Set")
-        self._do_command("SelTrackStartToEnd")
+        self._do_command('Select: Track=1 mode=Set')
+        self._do_command('SelTrackStartToEnd')
         self._do_command(f"Export2: Filename={filename} NumChannels=1.0")
         self.clear()
