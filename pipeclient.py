@@ -1,84 +1,10 @@
-#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-
-"""Automate Audacity via mod-script-pipe.
-
-Pipe Client may be used as a command-line script to send commands to
-Audacity via the mod-script-pipe interface, or loaded as a module.
-Requires Python 2.7 or later. Python 3 strongly recommended.
-
-======================
-Command Line Interface
-======================
-
-    usage: pipeclient.py [-h] [-t] [-s ] [-d]
-
-Arguments
----------
-    -h,--help: optional
-        show short help and exit
-    -t, --timeout: float, optional
-        timeout for reply in seconds (default: 10)
-    -s, --show-time: bool, optional
-        show command execution time (default: True)
-    -d, --docs: optional
-        show this documentation and exit
-
-Example
--------
-    $ python3 pipeclient.py -t 20 -s False
-
-    Launches command line interface with 20 second time-out for
-    returned message, and don't show the execution time.
-
-    When prompted, enter the command to send (not quoted), or 'Q' to quit.
-
-    $ Enter command or 'Q' to quit: GetInfo: Type=Tracks Format=LISP
-
-============
-Module Usage
-============
-
-Note that on a critical error (such as broken pipe), the module just exits.
-If a more graceful shutdown is required, replace the sys.exit()'s with
-exceptions.
-
-Example
--------
-
-    # Import the module:
-    >>> import pipeclient
-
-    # Create a client instance:
-    >>> client = pipeclient.PipeClient()
-
-    # Send a command:
-    >>> client.write("Command", timer=True)
-
-    # Read the last reply:
-    >>> print(client.read())
-
-See Also
---------
-PipeClient.write : Write a command to _write_pipe.
-PipeClient.read : Read Audacity's reply from pipe.
-
-Copyright Steve Daulton 2018
-Released under terms of the GNU General Public License version 2:
-<http://www.gnu.org/licenses/old-licenses/gpl-2.0.html />
-
-"""
 
 import os
 import sys
 import threading
 import time
 import errno
-import argparse
-
-
-if sys.version_info[0] < 4 and sys.version_info[1] < 8:
-    sys.exit('PipeClient Error: Python 3.9 or later required')
 
 # Platform specific constants
 if sys.platform == 'win32':
@@ -91,7 +17,6 @@ else:
     WRITE_NAME = PIPE_BASE + 'to.' + str(os.getuid())
     READ_NAME = PIPE_BASE + 'from.' + str(os.getuid())
     EOL = '\n'
-
 
 class PipeClient():
     """Write / read client access to Audacity via named pipes.
@@ -249,57 +174,3 @@ class PipeClient():
         if not PipeClient.reply_ready.isSet():
             return ''
         return self.reply
-
-
-def bool_from_string(strval):
-    """Return boolean value from string"""
-    if strval.lower() in ('true', 't', '1', 'yes', 'y'):
-        return True
-    if strval.lower() in ('false', 'f', '0', 'no', 'n'):
-        return False
-    raise argparse.ArgumentTypeError('Boolean value expected.')
-
-
-def main():
-    """Interactive command-line for PipeClient"""
-
-    parser = argparse.ArgumentParser()
-    parser.add_argument('-t', '--timeout', type=float, metavar='', default=10,
-                        help="timeout for reply in seconds (default: 10")
-    parser.add_argument('-s', '--show-time', metavar='True/False',
-                        nargs='?', type=bool_from_string,
-                        const='t', default='t', dest='show',
-                        help='show command execution time (default: True)')
-    parser.add_argument('-d', '--docs', action='store_true',
-                        help='show documentation and exit')
-    args = parser.parse_args()
-
-    if args.docs:
-        print(__doc__)
-        sys.exit(0)
-
-    client = PipeClient()
-    while True:
-        reply = ''
-        if sys.version_info[0] < 3:
-            message = raw_input("\nEnter command or 'Q' to quit: ")
-        else:
-            message = input("\nEnter command or 'Q' to quit: ")
-        start = time.time()
-        if message.upper() == 'Q':
-            sys.exit(0)
-        elif message == '':
-            pass
-        else:
-            client.write(message, timer=args.show)
-            while reply == '':
-                time.sleep(0.1)  # allow time for reply
-                if time.time() - start > args.timeout:
-                    reply = 'PipeClient: Reply timed-out.'
-                else:
-                    reply = client.read()
-            print(reply)
-
-
-if __name__ == '__main__':
-    main()
