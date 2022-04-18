@@ -11,6 +11,7 @@ class Audacity():
     def __init__(self):
         self.client = PipeClient()
         self.timeout = 10
+        self.clear()
 
     def _do_command(self, command):
         """Do the command. Return the response."""
@@ -25,6 +26,10 @@ class Audacity():
             else:
                 response = self.client.read()
         return response
+
+    def clear(self):
+        self._do_command("SelectAll")
+        self._do_command("RemoveTracks")
 
     def play_record(self, reference_sample=""):
         """Import track and record to new track.
@@ -57,5 +62,4 @@ class Audacity():
         self._do_command("Select: Track=1 mode=Set")
         self._do_command("SelTrackStartToEnd")
         self._do_command(f"Export2: Filename={filename} NumChannels=1.0")
-        self._do_command("SelectAll")
-        self._do_command("RemoveTracks")
+        self.clear()
