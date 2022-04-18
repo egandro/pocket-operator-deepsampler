@@ -11,7 +11,7 @@ Requires Python 2.7 or later. Python 3 strongly recommended.
 Command Line Interface
 ======================
 
-    usage: pipeclient.py [-h] [-t] [-s ] [-d]
+    usage: pipeaudacity.client.py [-h] [-t] [-s ] [-d]
 
 Arguments
 ---------
@@ -26,7 +26,7 @@ Arguments
 
 Example
 -------
-    $ python3 pipeclient.py -t 20 -s False
+    $ python3 pipeaudacity.client.py -t 20 -s False
 
     Launches command line interface with 20 second time-out for
     returned message, and don't show the execution time.
@@ -50,18 +50,18 @@ Example
     >>> import pipeclient
 
     # Create a client instance:
-    >>> client = pipeclient.PipeClient()
+    >>> client = pipeaudacity.client.PipeClient()
 
     # Send a command:
-    >>> client.write("Command", timer=True)
+    >>> audacity.client.write("Command", timer=True)
 
     # Read the last reply:
-    >>> print(client.read())
+    >>> print(audacity.client.read())
 
 See Also
 --------
-PipeClient.write : Write a command to _write_pipe.
-PipeClient.read : Read Audacity's reply from pipe.
+Pipeaudacity.client.write : Write a command to _write_pipe.
+Pipeaudacity.client.read : Read Audacity's reply from pipe.
 
 Copyright Steve Daulton 2018
 Released under terms of the GNU General Public License version 2:
@@ -72,6 +72,7 @@ Released under terms of the GNU General Public License version 2:
 import sys
 import time
 import argparse
+from audacity import Audacity
 
 from pipeclient import PipeClient
 
@@ -105,7 +106,7 @@ def main():
         print(__doc__)
         sys.exit(0)
 
-    client = PipeClient()
+    audacity = Audacity()
     while True:
         reply = ''
         message = input("\nEnter command or 'Q' to quit: ")
@@ -115,13 +116,13 @@ def main():
         elif message == '':
             pass
         else:
-            client.write(message, timer=args.show)
+            audacity.client.write(message, timer=args.show)
             while reply == '':
                 time.sleep(0.1)  # allow time for reply
                 if time.time() - start > args.timeout:
                     reply = 'PipeClient: Reply timed-out.'
                 else:
-                    reply = client.read()
+                    reply = audacity.client.read()
             print(reply)
 
 
