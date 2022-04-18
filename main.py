@@ -107,24 +107,26 @@ def main():
         sys.exit(0)
 
     audacity = Audacity()
-    while True:
-        reply = ''
-        message = input("\nEnter command or 'Q' to quit: ")
-        start = time.time()
-        if message.upper() == 'Q':
-            sys.exit(0)
-        elif message == '':
-            pass
-        else:
-            audacity.client.write(message, timer=args.show)
-            while reply == '':
-                time.sleep(0.1)  # allow time for reply
-                if time.time() - start > args.timeout:
-                    reply = 'PipeClient: Reply timed-out.'
-                else:
-                    reply = audacity.client.read()
-            print(reply)
+    # while True:
+    #     reply = ''
+    #     message = input("\nEnter command or 'Q' to quit: ")
+    #     start = time.time()
+    #     if message.upper() == 'Q':
+    #         sys.exit(0)
+    #     elif message == '':
+    #         pass
+    #     else:
+    #         audacity.client.write(message, timer=args.show)
+    #         while reply == '':
+    #             time.sleep(0.1)  # allow time for reply
+    #             if time.time() - start > args.timeout:
+    #                 reply = 'PipeClient: Reply timed-out.'
+    #             else:
+    #                 reply = audacity.client.read()
+    #         print(reply)
 
+    audacity.play_record('C:/projects/pocket-operator-deepsampler/samples/silence-10sec.wav')
+    audacity.export('C:/projects/pocket-operator-deepsampler/samples/output.wav')
 
 if __name__ == '__main__':
     main()
