@@ -62,12 +62,12 @@ class Audacity():
         if self.reference_clips_length < 0:
             return False
 
-        # TODO: Fix this!
+        # TODO: This might need some fixes
         compress=50
         independent=0
-        minimum=0.001
+        minimum=0.005
         threshold=-20
-        truncate=0.001
+        truncate=0.005
 
         self._do_command('Select: Track=1 mode=Set')
         self._do_command('SelectAll')
