@@ -66,7 +66,7 @@ class Audacity():
         compress=50
         independent=0
         minimum=0.005
-        threshold=-20
+        threshold=-40
         truncate=0.005
 
         self._do_command('Select: Track=1 mode=Set')
