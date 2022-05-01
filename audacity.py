@@ -54,8 +54,8 @@ class Audacity():
 
         # Now we can start recording.
         self._do_command('Record2ndChoice')
-        print('Sleeping until recording is complete...')
-        time.sleep(self.reference_clips_length + 0.1)
+        # print('Sleeping until recording is complete...')
+        # time.sleep(self.reference_clips_length + 0.1)
 
     def truncate_silence(self) -> bool:
         # we must have a reference clip loaded
@@ -63,7 +63,7 @@ class Audacity():
             return False
 
         # TODO: This might need some fixes
-        compress=50
+        compress=80
         independent=0
         minimum=0.005
         threshold=-40
