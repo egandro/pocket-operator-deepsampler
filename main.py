@@ -6,6 +6,7 @@ import sys
 
 #import argparse
 from audacity import Audacity
+from job import Job
 
 if sys.version_info[0] < 4 and sys.version_info[1] < 8:
     sys.exit('PipeClient Error: Python 3.9 or later required')
@@ -48,4 +49,7 @@ def main():
     audacity.export(tmp_file)
 
 if __name__ == '__main__':
-    main()
+    #main()
+    job = Job()
+    data = job.load('./models/PO-20-arcade.json')
+    print(f'Model: PO-{data["number"]} {data["name"]}')
