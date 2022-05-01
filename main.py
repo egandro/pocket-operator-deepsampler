@@ -52,4 +52,4 @@ if __name__ == '__main__':
     #main()
     job = Job()
     data = job.load('./models/PO-20-arcade.json')
-    print(f'Model: PO-{data["number"]} {data["name"]}')
+    print(f'Model: PO-{data.number} {data.name}')
