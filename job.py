@@ -23,9 +23,11 @@ class Job():
             o.__dict__[k] = self._dict2obj(d[k])
         return o
 
-    def _build_percent_values(self, steps) -> list:
+    def _build_percent_values_from_steps(self, steps) -> list:
         res = []
-        step = 100 / steps
+        if steps < 1:
+            steps = 2
+        step = 100 / (steps-1)
         i = 0 - step
         while i < 100:
             i += step
@@ -80,9 +82,9 @@ class Job():
                 if 'a_step_values' in elem:
                     values_a = elem['a_step_values']
                 elif 'a_steps' in elem:
-                    values_a = self._build_percent_values(elem['a_steps'])
+                    values_a = self._build_percent_values_from_steps(elem['a_steps'])
                 else:
-                    values_a = self._build_percent_values(10)
+                    values_a = self._build_percent_values_from_steps(10)
             elif a=="notes":
                 if 'notes' not in elem:
                     print('error: "a notes" missing in json sound section')
@@ -97,9 +99,9 @@ class Job():
                 if 'b_step_values' in elem:
                     values_b = elem['b_step_values']
                 elif 'b_steps' in elem:
-                    values_b = self._build_percent_values(elem['b_steps'])
+                    values_b = self._build_percent_values_from_steps(elem['b_steps'])
                 else:
-                    values_b = self._build_percent_values(10)
+                    values_b = self._build_percent_values_from_steps(10)
             else:
                 print(f'error: unsupported b value "{b}" in json sound section')
                 raise
