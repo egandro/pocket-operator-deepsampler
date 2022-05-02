@@ -19,6 +19,7 @@ if sys.version_info[0] < 4 and sys.version_info[1] < 8:
 #         return False
 #     raise argparse.ArgumentTypeError('Boolean value expected.')
 
+
 def main():
     # parser = argparse.ArgumentParser()
     # parser.add_argument('-t', '--timeout', type=float, metavar='', default=10,
@@ -43,13 +44,14 @@ def main():
     audacity.play_record()
 
     if audacity.truncate_silence() is False:
-        print( "Error: recorded silence")
+        print("Error: recorded silence")
         return 1
 
     audacity.export(tmp_file)
 
+
 if __name__ == '__main__':
-    #main()
+    # main()
     job = Job('./output')
     job.load('./models/PO-20-arcade.json')
     job.build_filelist()

@@ -3,6 +3,7 @@ from contextlib import nullcontext
 import json
 import os
 
+
 class Job():
 
     def __init__(self, dir: str):
@@ -16,6 +17,7 @@ class Job():
             d = [self._dict2obj(x) for x in d]
         if not isinstance(d, dict):
             return d
+
         class C(object):
             pass
         o = C()
@@ -31,6 +33,18 @@ class Job():
         i = 0 - step
         while i < 100:
             i += step
+            res.append(round(i))
+        return res
+
+    def _build_percent_values_from_step_width(self, width) -> list:
+        res = []
+        if width < 1:
+            width = 1
+        i = 0 - width
+        while i < 100:
+            i += width
+            if i > 100:
+                i = 100
             res.append(round(i))
         return res
 
@@ -74,45 +88,52 @@ class Job():
 
             base_file_name = f"{po_name}-sound-B{str(button).zfill(2)}-{name}"
 
-            values_a=NULL
-            values_b=NULL
+            values_a = NULL
+            values_b = NULL
 
-            if a=="percent":
+            if a == "percent":
                 #print("a is a percent value")
                 if 'a_step_values' in elem:
                     values_a = elem['a_step_values']
                 elif 'a_steps' in elem:
-                    values_a = self._build_percent_values_from_steps(elem['a_steps'])
+                    values_a = self._build_percent_values_from_steps(
+                        elem['a_steps'])
+                elif 'a_step_width' in elem:
+                    values_b = self._build_percent_values_from_step_width(
+                        elem['a_step_width'])
                 else:
                     values_a = self._build_percent_values_from_steps(10)
-            elif a=="notes":
+            elif a == "notes":
                 if 'notes' not in elem:
                     print('error: "a notes" missing in json sound section')
                     raise
                 values_a = elem['notes']
             else:
-                print(f'error: unsupported a value "{a}" in json sound section')
+                print(
+                    f'error: unsupported a value "{a}" in json sound section')
                 raise
 
-            if b=="percent":
+            if b == "percent":
                 #print("b is a percent value")
                 if 'b_step_values' in elem:
                     values_b = elem['b_step_values']
                 elif 'b_steps' in elem:
-                    values_b = self._build_percent_values_from_steps(elem['b_steps'])
+                    values_b = self._build_percent_values_from_steps(
+                        elem['b_steps'])
+                elif 'b_step_width' in elem:
+                    values_b = self._build_percent_values_from_step_width(
+                        elem['b_step_width'])
                 else:
                     values_b = self._build_percent_values_from_steps(10)
             else:
-                print(f'error: unsupported b value "{b}" in json sound section')
+                print(
+                    f'error: unsupported b value "{b}" in json sound section')
                 raise
 
             for a in values_a:
                 for b in values_b:
                     file_name = f"{base_file_name}-{a}-{b}.wav"
-                    print (file_name)
-
-
-
+                    print(file_name)
 
     def load(self, file_name) -> object:
         self._data_dict = NULL
@@ -121,7 +142,7 @@ class Job():
 
         with open(file_name, 'r') as f:
             self._data_dict = json.load(f)
-            #return self._dict2obj(self._data)
+            # return self._dict2obj(self._data)
             return self._data_dict
 
     def build_filelist(self) -> bool:
