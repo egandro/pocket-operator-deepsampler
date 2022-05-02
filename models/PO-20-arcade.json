@@ -7,7 +7,7 @@
             "button": 1,
             "name": "bass",
             "a": "percent",
-            "a_steps": 10,
+            "a_steps": 5,
             "b": "percent",
             "b_steps": 10,
             "truncate": {
