@@ -50,6 +50,7 @@ def main():
 
 if __name__ == '__main__':
     #main()
-    job = Job()
-    data = job.load('./models/PO-20-arcade.json')
-    print(f'Model: PO-{data.number} {data.name}')
+    job = Job('./output')
+    job.load('./models/PO-20-arcade.json')
+    job.build_filelist()
+    #print(f'Model: PO-{data.number} {data.name}')
