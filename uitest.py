@@ -5,6 +5,8 @@
 # as admin: pip install pyinstaller
 # pyinstaller --noconsole --onefile uitest.py
 
+# tutorial: https://www.youtube.com/watch?v=QeMaWQZllhg
+
 import PySimpleGUI as sg
 import os.path
 
